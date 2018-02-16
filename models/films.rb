@@ -11,5 +11,19 @@ class Films
     @price = options['price']
   end
 
+  def save()
+    sql = "INSERT INTO films(title, price)
+    VALUES($1, $2) RETURNING id;"
+
+    values = [@title, @price]
+    customer = SqlRunner.run(sql, values).first
+    @id = customer['id'].to_i
+  end
+
+  def Films.delete_all()
+    sql = "DELETE FROM films"
+    values = []
+    SqlRunner.run(sql, values)
+  end
 
 end #end of class
