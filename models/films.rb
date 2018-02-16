@@ -16,14 +16,37 @@ class Films
     VALUES($1, $2) RETURNING id;"
 
     values = [@title, @price]
-    customer = SqlRunner.run(sql, values).first
-    @id = customer['id'].to_i
+    film = SqlRunner.run(sql, values).first
+    @id = film['id'].to_i
+  end
+
+  def update()
+    sql = "UPDATE films SET (title, price) = ($1, $2) WHERE (id) = ($3);"
+    values = [@title, @price, @id]
+    SqlRunner.run(sql, values)
+  end
+
+    def customers_booked()
+      sql = "
+      SELECT customers.* FROM customers
+      INNER JOIN tickets
+      ON customers.id = tickets.customer_id
+      WHERE tickets.film_id = $1;"
+      values = [@id]
+      customers = SqlRunner.run(sql, values)
+      result = customers.map { |customer|Customers.new(customer) }
+      return result
   end
 
   def Films.delete_all()
     sql = "DELETE FROM films"
     values = []
     SqlRunner.run(sql, values)
+  end
+
+  def Films.map(film_info)
+    result = film_info.map { |film| Films.new( film ) }
+    return result
   end
 
 end #end of class
