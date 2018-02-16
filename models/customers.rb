@@ -8,7 +8,7 @@ class Customers
   def initialize(options)
     @id = options['id'].to_i if options['id']
     @name = options['name']
-    @funds = options['funds']
+    @funds = options['funds'].to_i
   end
 
   def save()
@@ -26,6 +26,14 @@ class Customers
     SqlRunner.run(sql, values)
   end
 
+  def buys_ticket(film_id)
+    price = Films.find(film_id).price
+    @funds -= price
+    update()
+    ticket = Tickets.new( {'film_id'=> film_id, 'customer_id'=> @id } )
+    ticket.save
+    return ticket
+  end
 
   def films_booked()
     sql = "
@@ -37,6 +45,13 @@ class Customers
     films = SqlRunner.run(sql, values)
     result = Films.map(films)
     return result
+  end
+
+  def Customers.find(id)
+    sql = "SELECT * FROM customers WHERE id = $1;"
+    values = [id]
+    film = SqlRunner.run(sql, values).first
+    return Customer.new(customer)
   end
 
   def Customers.delete_all()
