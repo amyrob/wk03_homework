@@ -26,11 +26,11 @@ class Customers
     SqlRunner.run(sql, values)
   end
 
-  def buys_ticket(film_id)
-    price = Films.find(film_id).price
+  def buys_ticket(screening_id)
+    price = Screenings.find(screening_id).price
     @funds -= price
     update()
-    ticket = Tickets.new( {'film_id'=> film_id, 'customer_id'=> @id } )
+    ticket = Tickets.new( {'customer_id' => @id, 'screening_id'=> screening_id } )
     ticket.save
     return ticket
   end
@@ -38,8 +38,10 @@ class Customers
   def films_booked()
     sql = "
     SELECT films.* FROM films
+    INNER JOIN screenings
+    ON films.id = screenings.film_id
     INNER JOIN tickets
-    ON films.id = tickets.film_id
+    ON screenings.id = tickets.screening_id
     WHERE tickets.customer_id = $1;"
     values = [@id]
     films = SqlRunner.run(sql, values)
