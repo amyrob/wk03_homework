@@ -26,6 +26,17 @@ class Films
     SqlRunner.run(sql, values)
   end
 
+  def tickets_bought()
+    sql = "
+    SELECT films.* FROM films
+    INNER JOIN tickets
+    ON films.id = tickets.film_id
+    WHERE tickets.film_id = $1;"
+    values = [@id]
+    tickets_bought = SqlRunner.run(sql, values).count
+    return tickets_bought
+  end
+
   def customers_booked()
     sql = "
     SELECT customers.* FROM customers

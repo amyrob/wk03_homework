@@ -6,7 +6,7 @@ class Customers
   attr_accessor :name, :funds
 
   def initialize(options)
-    @id = options['id'].to_i if options['id']
+    @id = options['id'].to_i if options['id'] != nil
     @name = options['name']
     @funds = options['funds'].to_i
   end
@@ -45,6 +45,17 @@ class Customers
     films = SqlRunner.run(sql, values)
     result = Films.map(films)
     return result
+  end
+
+  def tickets()
+    sql = "
+    SELECT customers.* FROM customers
+    INNER JOIN tickets
+    ON customers.id = tickets.customer_id
+    WHERE tickets.customer_id = $1;"
+    values = [@id]
+    tickets = SqlRunner.run(sql, values).count
+    return tickets
   end
 
   def Customers.find(id)
