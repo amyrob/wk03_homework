@@ -48,6 +48,19 @@ class Films
     return result
   end
 
+  # def popular_screening()
+  #   sql = "
+  #   SELECT film_id FROM screenings
+  #   WHERE screenings.film_id = $1
+  #   INNER JOIN tickets
+  #   ON screenings.id = tickets.screening_id
+  #   ORDER BY count(*) DESC;"
+  #
+  #   values = [@id]
+  #   screening = SqlRunner.run(sql, values)
+  #   return screening
+  # end
+
   def Films.find(film_id)
     sql = "SELECT * FROM films WHERE id = $1;"
     values = [film_id]

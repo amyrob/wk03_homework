@@ -28,6 +28,15 @@ class Screenings
     return Screenings.new(screening)
   end
 
+  def Screenings.most_popular_screening
+    sql = "SELECT screening_id FROM tickets
+    GROUP BY screening_id
+    ORDER BY count(*) DESC;"
+    values = []
+    screening = SqlRunner.run(sql, values).first
+    return screening
+  end
+
   def Screenings.delete_all()
     sql = "DELETE FROM screenings"
     values = []
